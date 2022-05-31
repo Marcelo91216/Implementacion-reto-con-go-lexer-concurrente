@@ -1,0 +1,14 @@
+import tkinter
+
+root = Tk()
+wdg = Frame(root)
+
+size = 90e-30
+wide = -120
+text = "please remember me as 'the asshole'"
+
+array = [90, 123, "hola", 90.123]
+
+size=wide-90
+for i in range array:
+    print(array[i])
