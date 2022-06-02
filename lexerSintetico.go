@@ -15,9 +15,10 @@ func main() {
 	// Lectura de archivos
 	for i, value := range os.Args {
 		if i > 0 {
+			// Leer los archivos de entrada y almacenarlos en un arreglo de buffers
 			fmt.Println(i, " --> ", value)
 		} else if len(os.Args) == 1 {
-			fmt.Println("Seleccione los archivos por favor")
+			fmt.Println("Al menos seleccione un archivo")
 		}
 	}
 
