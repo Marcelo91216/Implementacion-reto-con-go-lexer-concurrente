@@ -1,0 +1,6 @@
+lo que sea # comentario desde aqui
+(dentro de un parentesis)#comentario
+][]
+and or variable
+variable+var_0=120
++-&&

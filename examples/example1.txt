@@ -1,0 +1,4 @@
+el segundo ejemplo de salida # comentario si o no 
+andoriflandnothing
+90_nothing
+variable_02=90
