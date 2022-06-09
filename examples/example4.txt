@@ -1,0 +1,7 @@
+import tkinter
+
+var_0=123
+var_1=-123e90
+var_2=123E-122
+var_3=-12.32e-123
+var_4=var_3=>var_2

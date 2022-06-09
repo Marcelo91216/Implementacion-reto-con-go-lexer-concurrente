@@ -1,0 +1,15 @@
+"doble string"
+'simple string'
+' no ha terminado simple
+" no ha terminado doble
+''' super simple string
+
+sdasd dsad sadas dsa d s '''
+
+""" super 
+    no tab
+    doble
+    string """
+
+"""                                
+ 3213213 fewfdwefew    
