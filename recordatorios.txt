@@ -1,3 +1,0 @@
-El archivo leerá de entre uno o varios documentos y los convertirá 
-en archivos html con sintaxis coloreada correctamente
-

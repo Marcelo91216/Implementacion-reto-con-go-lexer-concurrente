@@ -25,10 +25,7 @@ func main() {
 	if err != nil {
 		fmt.Println("Error al seleccionar el directorio!")
 	}
-	c := make(chan string)
-	name := make(chan string)
-	var html string
-	var fileName string
+	c := make(chan bool, 10)
 
 	// Lectura de archivos secuencial
 	start := time.Now()
@@ -48,35 +45,30 @@ func main() {
 	fmt.Println("Time duration from secuencial algorithm: " + durationNew.String())
 	// Lectura de archivos paralela
 	size := 0
-	start = time.Now()
+	startNew := time.Now()
 	for _, f := range files {
 		// Leer los archivos de entrada y almacenarlos en un arreglo de buffers
 		if string((os.Args[1])[len(os.Args[1])-1]) != "\\" {
-			go lexerSintetico(os.Args[1]+"\\"+(f.Name()), c, name)
+			go lexerSintetico(os.Args[1]+"\\"+(f.Name()), c)
 		} else {
-			go lexerSintetico(os.Args[1]+(f.Name()), c, name)
+			go lexerSintetico(os.Args[1]+(f.Name()), c)
 		}
 		size++
 	}
-	// Escritura de archivos
+	// Escritura de archivos paralela
 	for i := 0; i < size; i++ {
-		html = <-c
-		fileName = <-name
-		if string((os.Args[2])[len(os.Args[2])-1]) != "\\" {
-			writeFile(html, os.Args[2]+"\\"+"A00831137_"+fileName)
-		} else {
-			writeFile(html, os.Args[2]+"A00831137_"+fileName)
+		ok := <-c
+		if !ok {
+			close(c)
+			break
 		}
-
 	}
-	duration := time.Since(start)
+	duration := time.Since(startNew)
 	fmt.Println("Time duration from paralel algorithm: " + duration.String())
-	close(name)
-	close(c)
 }
 
 // Analisis y coloreo de sintaxis
-func lexerSintetico(file string, c, name chan string) {
+func lexerSintetico(file string, c chan bool) {
 	// Creacion del buffer del archivo
 	fileBuffer, err := ioutil.ReadFile(file)
 	if err != nil {
@@ -400,8 +392,12 @@ func lexerSintetico(file string, c, name chan string) {
 		}
 	}
 	html = "<!DOCTYPE html><html><title>Python Sintaxis</title></html><body>" + argument + "</body>"
-	c <- html
-	name <- string(filepath.Base(file))
+	//  string(filepath.Base(file))
+	if string((os.Args[2])[len(os.Args[2])-1]) != "\\" {
+		writeFile_paralel(html, os.Args[2]+"\\"+"A00831137_"+string(filepath.Base(file)), c)
+	} else {
+		writeFile_paralel(html, os.Args[2]+"A00831137_"+string(filepath.Base(file)), c)
+	}
 }
 
 func lexerSintetico_secuencial(file string) string {
@@ -743,6 +739,21 @@ func writeFile(html, name string) {
 	if err2 != nil {
 		fmt.Println("Error al escribir sobre el archivo!!")
 	}
+}
+
+func writeFile_paralel(html, name string, c chan bool) {
+	// Nombre del html final
+	salidaName := name[:len(name)-len(filepath.Ext(name))] // Nombre del archivo salida
+	// Escritura del archivo a convertir a html
+	file, err := os.Create(string(salidaName) + ".html")
+	if err != nil {
+		fmt.Println("Error al crear el archivo destino!!")
+	}
+	_, err2 := file.WriteString(html)
+	if err2 != nil {
+		fmt.Println("Error al escribir sobre el archivo!!")
+	}
+	c <- true
 }
 
 func partOfArray(array []string, ele string) bool {
